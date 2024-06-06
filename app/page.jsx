@@ -1,8 +1,34 @@
+"use client";
 import Image from "next/image";
-
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "./firebase/config";
+import { useRouter } from "next/navigation";
+import { signOut } from "firebase/auth";
 export default function Home() {
+  const [user] = useAuthState(auth);
+  const router = useRouter();
+  const userSession = sessionStorage.getItem("user");
+
+  if (!user && !userSession) {
+    router.push("/login");
+    return null;
+  }
+
+  const userName  = user?.displayName || user?.email;
+
+  console.log(user);
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
+      <button
+        onClick={() => {
+          signOut(auth);
+          sessionStorage.removeItem("user");
+        }}
+        className="absolute top-0 right-0 m-4 p-2 bg-gray-200 rounded-lg dark:bg-zinc-800/30"
+      >
+        Sign Out
+      </button>
       <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
         <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
           Get started by editing&nbsp;
@@ -53,7 +79,7 @@ export default function Home() {
             </span>
           </h2>
           <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
+            {userName ? `Welcome, ${userName}!` : "Welcome to your Next.js app!"}
           </p>
         </a>
 
