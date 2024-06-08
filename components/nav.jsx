@@ -3,7 +3,8 @@ import { useState } from "react";
 import { UserButton } from "@clerk/nextjs";
 import { Dialog } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
-import logo from "../public/next.svg";
+import logo from "../public/logo.png";
+import Image from "next/image";
 
 const navigation = [
   { name: "Home", href: "/" },
@@ -22,9 +23,9 @@ export default function Nav() {
         >
           <div className="flex lg:flex-1">
             <a href="/" className="-m-1.5 p-1.5 flex gap-2">
-              <span className="sr-only">Indian Carpool</span>
-              <img className="h-14 w-auto" src={logo} alt="" />
-              <div className="text-2xl logo pt-2.5 font-bold">
+              <span className="sr-only">Money Tracker</span>
+              <Image className="h-10 w-auto" src={logo} alt="" />
+              <div className="text-2xl logo font-bold pt-1">
                 Money Tracker
               </div>
             </a>
@@ -74,8 +75,10 @@ export default function Nav() {
           <Dialog.Panel className="fixed inset-y-0 right-0 z-40 w-full overflow-y-auto bg-darkbg px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-royalblue-950">
             <div className="flex items-center justify-between">
               <a href="#" className="-m-1.5 p-1.5">
-                <span className="sr-only">Track Money</span>
-                <div className=" text-2xl logo font-bold">Track Money</div>
+                <span className="sr-only">Money Tracker</span>
+                <div className=" text-2xl logo font-bold text-royalblue-200">
+                  Money Tracker
+                </div>
                 {/* <img
                 className="h-8 w-auto"
                 src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
