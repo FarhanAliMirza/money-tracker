@@ -1,8 +1,8 @@
 "use client";
 import AddAccount from "../components/AddAccount";
-import Nav from "../components/Nav";
 import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 import AccountTransactions from "../components/AccountTransactions";
+import Nav from "../components/Nav";
 
 const Account = () => {
   const newtheme = extendTheme({
