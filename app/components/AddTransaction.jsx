@@ -33,10 +33,11 @@ const AddTransaction = () => {
   const showToast = useShowToast();
   const { userId, isLoaded } = useAuth();
   const [accounts, setAccounts] = useState([]);
+  const [fromAccount, setFromAccount] = useState("");
   const [newTransaction, setNewTransaction] = useState({
     id: "",
     date: new Date().toISOString().split("T")[0],
-    acc: accounts[0]?.name || "",
+    acc: "",
     payee: "",
     type: "expense",
     amount: "",
@@ -47,60 +48,59 @@ const AddTransaction = () => {
   });
 
   useEffect(() => {
-    if (!userId) return;
-    const q = query(collection(db, "payees"), where("createdBy", "==", userId));
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      let payeesArray = [];
-      querySnapshot.forEach((doc) => {
-        payeesArray.push({ ...doc.data(), id: doc.id });
+    if (isLoaded) {
+      const q = query(collection(db, "payees"), where("createdBy", "==", userId));
+      const unsubscribe = onSnapshot(q, (querySnapshot) => {
+        let payeesArray = [];
+        querySnapshot.forEach((doc) => {
+          payeesArray.push({ ...doc.data(), id: doc.id });
+        });
+        setPayees(payeesArray);
       });
-      setPayees(payeesArray);
-    });
-    return () => unsubscribe();
-  }, [userId]);
+      return () => unsubscribe();
+    }
+  }, [isLoaded, userId]);
 
   useEffect(() => {
-    const q = query(
-      collection(db, "accounts"),
-      where("createdBy", "==", userId)
-    );
-    const unsubscibe = onSnapshot(q, (querySnapshot) => {
-      let accountsArray = [];
-      querySnapshot.forEach((doc) => {
-        accountsArray.push({ ...doc.data(), id: doc.id });
+    if (isLoaded) {
+      const q = query(collection(db, "accounts"), where("createdBy", "==", userId));
+      const unsubscribe = onSnapshot(q, (querySnapshot) => {
+        let accountsArray = [];
+        querySnapshot.forEach((doc) => {
+          accountsArray.push({ ...doc.data(), id: doc.id });
+        });
+        setAccounts(accountsArray);
+        if (accountsArray.length > 0) {
+          setFromAccount(accountsArray[0].name);
+        }
       });
-      setAccounts(accountsArray);
-      return () => unsubscibe();
-    });
-  }, []);
+      return () => unsubscribe();
+    }
+  }, [isLoaded, userId]);
 
   const addTransaction = async (e) => {
     e.preventDefault();
-    if (
-      newTransaction.payee === "" ||
-      newTransaction.amount === "" ||
-      newTransaction.acc === ""
-    ) {
+    if (newTransaction.payee === "" || newTransaction.amount === "" || fromAccount === "") {
       showToast("Error", "Please fill all the fields", "error");
     } else {
-      const transactionToAdd = { ...newTransaction, type: type.toString() };
-      const postDocRef = await addDoc(
-        collection(db, "transactions"),
-        transactionToAdd
-      );
+      const transaction = {
+        ...newTransaction,
+        type: type,
+        acc: fromAccount,
+        createdBy: userId,
+      };
+      const postDocRef = await addDoc(collection(db, "transactions"), transaction);
       await updateDoc(postDocRef, { id: postDocRef.id });
       showToast("Success", "Transaction added successfully", "success");
       resetForm();
-      setType("expense");
     }
   };
 
   const resetForm = () => {
-    setType("expense");
     setNewTransaction({
       id: "",
       date: new Date().toISOString().split("T")[0],
-      acc: "Cash",
+      acc: "",
       payee: "",
       type: "expense",
       amount: "",
@@ -109,6 +109,8 @@ const AddTransaction = () => {
       createdBy: userId,
       createdAt: new Date().toISOString(),
     });
+    setType("expense");
+    setFromAccount(accounts.length > 0 ? accounts[0].name : "");
   };
 
   return (
@@ -129,6 +131,7 @@ const AddTransaction = () => {
                 variant={"flushed"}
                 type="date"
                 defaultValue={newTransaction.date}
+                value={newTransaction.date}
                 onChange={(e) => {
                   setNewTransaction({
                     ...newTransaction,
@@ -138,16 +141,14 @@ const AddTransaction = () => {
               />
               <Select
                 variant={"flushed"}
-                defaultValue={newTransaction.acc}
+                value={fromAccount}
+                placeholder="Select Account"
                 onChange={(e) => {
-                  setNewTransaction({
-                    ...newTransaction,
-                    acc: e.target.value,
-                  });
+                  setFromAccount(e.target.value);
                 }}
               >
                 {accounts.map((account) => (
-                  <option value={account.name}>{account.name}</option>
+                  <option key={account.id} value={account.name}>{account.name}</option>
                 ))}
               </Select>
             </Stack>
@@ -181,7 +182,7 @@ const AddTransaction = () => {
                   onChange={(e) =>
                     setNewTransaction({
                       ...newTransaction,
-                      loan: { isLoan: e.target.checked, paid: false },
+                      loan: { ...newTransaction.loan, isLoan: e.target.checked },
                     })
                   }
                 >

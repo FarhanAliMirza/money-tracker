@@ -55,7 +55,7 @@ const AccountTransactions = () => {
 
   const filterTransactions = (account, month, loans) => {
     const filteredAccount = transactions.filter(
-      (transaction) => transaction.account === account
+      (transaction) => transaction.acc === account
     );
     if (month === "12") {
       setFilteredTransactions(filteredAccount);
@@ -92,8 +92,8 @@ const AccountTransactions = () => {
             list="accounts"
           />
           <datalist id="accounts">
-            {accounts.map((Account) => (
-              <option value={Account.name} />
+            {accounts.map((account) => (
+              <option key={account.id} value={account.name} />
             ))}
           </datalist>
           <Select
