@@ -5,8 +5,8 @@ import Nav from "./components/Nav";
 import TransactionPanel from "./components/TransactionPanel";
 import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 import AddTransaction from "./components/AddTransaction";
-import { Transaction } from "firebase/firestore";
-
+import Nav from "./components/nav";
+import Hero from "./components/hero";
 export default function Home() {
   const newtheme = extendTheme({
     colors: {

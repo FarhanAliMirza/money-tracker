@@ -130,6 +130,7 @@ const AddTransaction = () => {
               <Input
                 variant={"flushed"}
                 type="date"
+                defaultValue={newTransaction.date}
                 value={newTransaction.date}
                 onChange={(e) => {
                   setNewTransaction({
@@ -156,22 +157,16 @@ const AddTransaction = () => {
               placeholder="Item/Payee"
               list="payees"
               value={newTransaction.payee}
-              onChange={(e) => {
-                setNewTransaction({
-                  ...newTransaction,
-                  payee: e.target.value,
-                });
-              }}
+              onChange={(e) =>
+                setNewTransaction({ ...newTransaction, payee: e.target.value })
+              }
             />
             <datalist id="payees">
               {payees.map((payee) => (
                 <option key={payee.id} value={payee.name} />
               ))}
             </datalist>
-            <RadioGroup
-              onChange={setType}
-              value={type}
-            >
+            <RadioGroup onChange={setType} value={type}>
               <Stack direction="row" spacing={"12px"}>
                 <Radio size={"md"} value="expense">
                   Expense

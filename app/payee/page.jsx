@@ -1,4 +1,8 @@
 "use client";
+import AddPayee from "@/app/components/AddPayee";
+import { ChakraProvider, extendTheme } from "@chakra-ui/react";
+import PayeeTransactions from "@/app/components/PayeeTransactions";
+import Nav from "../components/nav";
 import AddPayee from "../components/AddPayee";
 import Nav from "../components/Nav";
 import { ChakraProvider, extendTheme } from "@chakra-ui/react";

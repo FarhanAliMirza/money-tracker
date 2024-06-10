@@ -13,7 +13,7 @@ const navigation = [
   { name: "Account", href: "/account" },
 ];
 
-export default function Nav() {
+const  Nav =()=> {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
@@ -122,3 +122,5 @@ export default function Nav() {
     </>
   );
 }
+
+export default Nav;
