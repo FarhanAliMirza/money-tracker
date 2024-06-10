@@ -1,8 +1,9 @@
 "use client";
 import AddPayee from "@/app/components/AddPayee";
-import Nav from "@/app/components/Nav";
+
 import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 import PayeeTransactions from "@/app/components/PayeeTransactions";
+import Nav from "../components/nav";
 
 const Payee = () => {
   const newtheme = extendTheme({
