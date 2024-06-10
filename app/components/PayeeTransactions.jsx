@@ -93,7 +93,7 @@ const PayeeTransactions = () => {
           />
           <datalist id="payees">
             {payees.map((payee) => (
-              <option value={payee.name} />
+              <option key={payee.id} value={payee.name} />
             ))}
           </datalist>
           <Select

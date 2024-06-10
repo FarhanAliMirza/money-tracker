@@ -92,8 +92,8 @@ const AccountTransactions = () => {
             list="accounts"
           />
           <datalist id="accounts">
-            {accounts.map((Account) => (
-              <option value={Account.name} />
+            {accounts.map((account) => (
+              <option key={account.id} value={account.name} />
             ))}
           </datalist>
           <Select

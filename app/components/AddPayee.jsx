@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import useShowToast from "@/hooks/useShowToast";
-import { db } from "@/app/firebase/config";
+import { db } from "../firebase/config";
 import { addDoc, updateDoc, collection } from "firebase/firestore";
 import { Button, Container, FormControl, Input, Stack } from "@chakra-ui/react";
 import { useAuth } from "@clerk/nextjs";
