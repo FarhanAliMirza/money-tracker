@@ -37,170 +37,147 @@ const AddTransaction = () => {
     date: new Date().toISOString().split("T")[0],
     acc: "Cash",
     payee: "",
-    type: type.toString(),
+    type: "expense",
     amount: "",
     note: "",
-    loan: { isLoan: false, paid: false, paidDate: ""},
+    loan: { isLoan: false, paid: false, paidDate: "" },
     createdBy: userId,
     createdAt: new Date().toISOString(),
   });
 
   useEffect(() => {
-    const q = query(collection(db, "payees"),where("createdBy", "==", userId));
-    const unsubscibe = onSnapshot(q, (querySnapshot) => {
+    if (!userId) return;
+    const q = query(collection(db, "payees"), where("createdBy", "==", userId));
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
       let payeesArray = [];
       querySnapshot.forEach((doc) => {
         payeesArray.push({ ...doc.data(), id: doc.id });
       });
       setPayees(payeesArray);
-      return () => unsubscibe();
     });
-  }, []);
+    return () => unsubscribe();
+  }, [userId]);
 
   const addTransaction = async (e) => {
     e.preventDefault();
     if (newTransaction.payee === "" || newTransaction.amount === "") {
       showToast("Error", "Please fill all the fields", "error");
     } else {
-      newTransaction.type = type.toString();
-      const postDocRef = await addDoc(
-        collection(db, "transactions"),
-        newTransaction
-      );
+      const transactionToAdd = { ...newTransaction, type: type.toString() };
+      const postDocRef = await addDoc(collection(db, "transactions"), transactionToAdd);
       await updateDoc(postDocRef, { id: postDocRef.id });
       showToast("Success", "Transaction added successfully", "success");
-      setType("expense");
-      setNewTransaction({
-        id: "",
-        date: new Date().toISOString().split("T")[0],
-        acc: "Cash",
-        payee: "",
-        type: type.toString(),
-        amount: "",
-        note: "",
-        loan: { isLoan: false, paid: false },
-        createdBy: userId,
-        createdAt: new Date().toISOString(),
-      });
+      resetForm();
     }
   };
 
+  const resetForm = () => {
+    setType("expense");
+    setNewTransaction({
+      id: "",
+      date: new Date().toISOString().split("T")[0],
+      acc: "Cash",
+      payee: "",
+      type: "expense",
+      amount: "",
+      note: "",
+      loan: { isLoan: false, paid: false, paidDate: "" },
+      createdBy: userId,
+      createdAt: new Date().toISOString(),
+    });
+  };
+
   return (
-    <>
-      <Container
-        minW={"xs"}
-        maxW={"lg"}
-        mt={"24px"}
-        p={"3"}
-        borderRadius={"lg"}
-        bg={"royalblue.950"}
-      >
-        <Center>
-          <FormControl color={"royalblue.300"} gap={"8px"}>
-            <FormLabel>New Transaction</FormLabel>
-            <Stack spacing={2}>
-              <Stack direction={"row"}>
-                <Input
-                  variant={"flushed"}
-                  type="date"
-                  defaultValue={newTransaction.date}
-                  onChange={(e) => {
-                    setNewTransaction({
-                      ...newTransaction,
-                      date: e.target.value,
-                    });
-                  }}
-                />
-                <Select
-                  variant={"flushed"}
-                  defaultValue={newTransaction.acc}
-                  onChange={(e) => {
-                    setNewTransaction({
-                      ...newTransaction,
-                      acc: e.target.value,
-                    });
-                  }}
-                >
-                  <option value="Cash">Cash</option>
-                  <option value="Online SBI">Online SBI</option>
-                  <option value="APL">APL</option>
-                  <option value="Online HDFC">Online HDFC</option>
-                </Select>
-              </Stack>
+    <Container
+      minW={"xs"}
+      maxW={"lg"}
+      mt={"24px"}
+      p={"3"}
+      borderRadius={"lg"}
+      bg={"royalblue.950"}
+    >
+      <Center>
+        <FormControl color={"royalblue.300"} gap={"8px"}>
+          <FormLabel>New Transaction</FormLabel>
+          <Stack spacing={2}>
+            <Stack direction={"row"}>
               <Input
                 variant={"flushed"}
-                placeholder="Item/Payee"
-                list="payees"
-                onChange={(e) => {
-                  setNewTransaction({
-                    ...newTransaction,
-                    payee: e.target.value,
-                  });
-                }}
+                type="date"
+                value={newTransaction.date}
+                onChange={(e) => setNewTransaction({ ...newTransaction, date: e.target.value })}
               />
-              <datalist id="payees">
-                {payees.map((payee) => (
-              <option value={payee.name} />))}
-              </datalist>
-              <RadioGroup onChange={setType} value={type}>
-                <Stack direction="row" spacing={"12px"}>
-                  <Radio size={"md"} value="expense">
-                    Expense
-                  </Radio>
-                  <Radio size={"md"} value="income">
-                    Income
-                  </Radio>
-                  <Radio size={"md"} value="transfer">
-                    Transfer
-                  </Radio>
-                  <Checkbox
-                    onChange={(e) =>
-                      setNewTransaction({
-                        ...newTransaction,
-                        loan: { isLoan: e.target.checked, paid: false },
-                      })
-                    }
-                  >
-                    Is loan
-                  </Checkbox>
-                </Stack>
-              </RadioGroup>
-              <InputGroup>
-                <InputLeftElement pointerEvents={"none"}>₹</InputLeftElement>
-                <Input
-                  variant={"flushed"}
-                  placeholder="Amount"
-                  type="tel"
-                  onChange={(e) =>
-                    setNewTransaction({
-                      ...newTransaction,
-                      amount: e.target.value,
-                    })
-                  }
-                />
-              </InputGroup>
-              <Input
+              <Select
                 variant={"flushed"}
-                placeholder="Note"
-                onChange={(e) =>
-                  setNewTransaction({ ...newTransaction, note: e.target.value })
-                }
-              />
+                value={newTransaction.acc}
+                onChange={(e) => setNewTransaction({ ...newTransaction, acc: e.target.value })}
+              >
+                <option value="Cash">Cash</option>
+                <option value="Online SBI">Online SBI</option>
+                <option value="APL">APL</option>
+                <option value="Online HDFC">Online HDFC</option>
+              </Select>
             </Stack>
-          </FormControl>
-        </Center>
-        <Stack direction={"row"} spacing={4} mt={"8px"}>
-          <Spacer />
-          <Button
-            colorScheme={"royalblue"}
-            size={"md"}
-            onClick={addTransaction}
-          >
-            Add
-          </Button>
-        </Stack>
-      </Container>
-    </>
+            <Input
+              variant={"flushed"}
+              placeholder="Item/Payee"
+              list="payees"
+              value={newTransaction.payee}
+              onChange={(e) => setNewTransaction({ ...newTransaction, payee: e.target.value })}
+            />
+            <datalist id="payees">
+              {payees.map((payee) => (
+                <option key={payee.id} value={payee.name} />
+              ))}
+            </datalist>
+            <RadioGroup onChange={setType} value={type}>
+              <Stack direction="row" spacing={"12px"}>
+                <Radio size={"md"} value="expense">
+                  Expense
+                </Radio>
+                <Radio size={"md"} value="income">
+                  Income
+                </Radio>
+                <Radio size={"md"} value="transfer">
+                  Transfer
+                </Radio>
+                <Checkbox
+                  isChecked={newTransaction.loan.isLoan}
+                  onChange={(e) => setNewTransaction({
+                    ...newTransaction,
+                    loan: { isLoan: e.target.checked, paid: false },
+                  })}
+                >
+                  Is loan
+                </Checkbox>
+              </Stack>
+            </RadioGroup>
+            <InputGroup>
+              <InputLeftElement pointerEvents={"none"}>₹</InputLeftElement>
+              <Input
+                variant={"flushed"}
+                placeholder="Amount"
+                type="tel"
+                value={newTransaction.amount}
+                onChange={(e) => setNewTransaction({ ...newTransaction, amount: e.target.value })}
+              />
+            </InputGroup>
+            <Input
+              variant={"flushed"}
+              placeholder="Note"
+              value={newTransaction.note}
+              onChange={(e) => setNewTransaction({ ...newTransaction, note: e.target.value })}
+            />
+          </Stack>
+        </FormControl>
+      </Center>
+      <Stack direction={"row"} spacing={4} mt={"8px"}>
+        <Spacer />
+        <Button colorScheme={"royalblue"} size={"md"} onClick={addTransaction}>
+          Add
+        </Button>
+      </Stack>
+    </Container>
   );
 };
 
