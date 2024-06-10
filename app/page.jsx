@@ -3,7 +3,7 @@ import { SignedIn, SignedOut } from "@clerk/nextjs";
 import TransactionPanel from "./components/TransactionPanel";
 import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 import AddTransaction from "./components/AddTransaction";
-import Hero from "./components/hero";
+import Hero from "./components/Hero";
 import Nav from "./components/Nav";
 export default function Home() {
   const newtheme = extendTheme({
