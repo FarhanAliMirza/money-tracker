@@ -2,7 +2,10 @@
 import { SignedIn, SignedOut } from "@clerk/nextjs";
 import Hero from "@/app/components/Hero";
 import Nav from "./components/Nav";
+import TransactionPanel from "./components/TransactionPanel";
 import { ChakraProvider, extendTheme } from "@chakra-ui/react";
+import AddTransaction from "./components/AddTransaction";
+import { Transaction } from "firebase/firestore";
 
 export default function Home() {
   const newtheme = extendTheme({
@@ -29,6 +32,8 @@ export default function Home() {
       <ChakraProvider theme={newtheme}>
         <SignedIn>
           <Nav />
+          <AddTransaction />
+          <TransactionPanel />
         </SignedIn>
         <SignedOut>
           <Hero />

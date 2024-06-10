@@ -16,13 +16,13 @@ import { SearchIcon } from "@chakra-ui/icons";
 import ViewTransactions from "./ViewTransactions";
 import { m } from "framer-motion";
 
-const PayeeTransactions = () => {
+const AccountTransactions = () => {
   const [transactions, setTransactions] = useState([]);
   const [month, setMonth] = useState("12");
   const [loans, setLoans] = useState(false);
   const [filteredTransactions, setFilteredTransactions] = useState([]);
-  const [payees, setPayees] = useState([]);
-  const [payee, setPayee] = useState("");
+  const [accounts, setAccounts] = useState([]);
+  const [account, setAccount] = useState("");
   const { userId, isLoaded } = useAuth();
 
   useEffect(() => {
@@ -38,29 +38,29 @@ const PayeeTransactions = () => {
   }, []);
 
   useEffect(() => {
-    const q = query(collection(db, "payees"), where("createdBy", "==", userId));
+    const q = query(collection(db, "accounts"), where("createdBy", "==", userId));
     const unsubscibe = onSnapshot(q, (querySnapshot) => {
-      let payeesArray = [];
+      let accountsArray = [];
       querySnapshot.forEach((doc) => {
-        payeesArray.push({ ...doc.data(), id: doc.id });
+        accountsArray.push({ ...doc.data(), id: doc.id });
       });
-      setPayees(payeesArray);
+      setAccounts(accountsArray);
       return () => unsubscibe();
     });
   }, []);
 
   useEffect(() => {
-    filterTransactions(payee, month);
+    filterTransactions(account, month);
   }, [transactions]);
 
-  const filterTransactions = (payee, month, loans) => {
-    const filteredPayee = transactions.filter(
-      (transaction) => transaction.payee === payee
+  const filterTransactions = (account, month, loans) => {
+    const filteredAccount = transactions.filter(
+      (transaction) => transaction.account === account
     );
     if (month === "12") {
-      setFilteredTransactions(filteredPayee);
+      setFilteredTransactions(filteredAccount);
     } else {
-      const filtered = filteredPayee.filter(
+      const filtered = filteredAccount.filter(
         (transaction) => new Date(transaction.date).getMonth() == month
       );
       setFilteredTransactions(filtered);
@@ -86,14 +86,14 @@ const PayeeTransactions = () => {
         <Stack spacing={2} direction={"row"}>
           <Input
             color={"royalblue.300"}
-            placeholder="Select Payee"
-            value={payee}
-            onChange={(e) => setPayee(e.target.value)}
-            list="payees"
+            placeholder="Select Account"
+            value={account}
+            onChange={(e) => setAccount(e.target.value)}
+            list="accounts"
           />
-          <datalist id="payees">
-            {payees.map((payee) => (
-              <option value={payee.name} />
+          <datalist id="accounts">
+            {accounts.map((Account) => (
+              <option value={Account.name} />
             ))}
           </datalist>
           <Select
@@ -117,7 +117,7 @@ const PayeeTransactions = () => {
           </Select>
           <IconButton
             colorScheme="royalblue"
-            onClick={() => filterTransactions(payee, month, loans)}
+            onClick={() => filterTransactions(account, month, loans)}
             icon={<SearchIcon />}
           />
         </Stack>
@@ -131,4 +131,4 @@ const PayeeTransactions = () => {
   );
 };
 
-export default PayeeTransactions;
+export default AccountTransactions;

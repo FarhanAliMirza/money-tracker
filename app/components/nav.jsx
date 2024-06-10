@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
-import { UserButton } from "@clerk/nextjs";
+import { SkeletonCircle } from "@chakra-ui/react";
+import { UserButton, ClerkLoading, ClerkLoaded } from "@clerk/nextjs";
 import { Dialog } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import logo from "../../public/logo.png";
@@ -9,6 +10,7 @@ import Image from "next/image";
 const navigation = [
   { name: "Home", href: "/" },
   { name: "Payee", href: "/payee" },
+  { name: "Account", href: "/account" },
 ];
 
 export default function Nav() {
@@ -25,9 +27,7 @@ export default function Nav() {
             <a href="/" className="-m-1.5 p-1.5 flex gap-2">
               <span className="sr-only">Money Tracker</span>
               <Image className="h-10 w-auto" src={logo} alt="" />
-              <div className="text-2xl logo font-bold pt-1">
-                Money Tracker
-              </div>
+              <div className="text-2xl logo font-bold pt-1">Money Tracker</div>
             </a>
           </div>
           <div className="flex lg:hidden">
@@ -53,16 +53,13 @@ export default function Nav() {
                 {item.name}
               </a>
             ))}
-            <UserButton />
+            <ClerkLoading>
+              <SkeletonCircle size="7" />
+            </ClerkLoading>
+            <ClerkLoaded>
+              <UserButton />
+            </ClerkLoaded>
           </div>
-          {/* <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-            <Link
-              to="/admin"
-              className="text-sm font-semibold leading-6 text-white"
-            >
-              Admin Login <span aria-hidden="true">&rarr;</span>
-            </Link>
-          </div> */}
         </div>
 
         <Dialog

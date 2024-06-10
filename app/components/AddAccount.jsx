@@ -6,20 +6,21 @@ import { addDoc, updateDoc, collection } from "firebase/firestore";
 import { Button, Container, FormControl, Input, Stack } from "@chakra-ui/react";
 import { useAuth } from "@clerk/nextjs";
 
-const AddPayee = () => {
+const AddAccount = () => {
   const { userId, isLoaded } = useAuth();
-  const [payee, setPayee] = useState({ id: "", name: "", createdBy: userId});
+  const [account, setAccount] = useState({ id: "", name: "", createdBy: userId});
   const showToast = useShowToast();
-  const addPayee = async (e) => {
+  const addAccount = async (e) => {
     e.preventDefault();
     try {
       if (!isLoaded || !userId){
         throw new Error("User not authenticated");
       }
-      const docRef = await addDoc(collection(db, "payees"), payee);
+      const docRef = await addDoc(collection(db, "accounts"), account);
       await updateDoc(docRef, { id: docRef.id });
-      showToast("Success", "Payee added successfully", "success");
-      setPayee({ id: "", name: "",createdBy: userId });
+      console.log(account);
+      showToast("Success", "Account added successfully", "success");
+      setAccount({ id: "", name: "",createdBy: userId });
     } catch (e) {
       showToast("Error", e.message, "error");
     }
@@ -38,11 +39,11 @@ const AddPayee = () => {
         <FormControl color={"royalblue.300"} gap={"8px"}>
           <Stack spacing={2}>
             <Input
-              placeholder="Payee Name"
-              value={payee.name}
-              onChange={(e) => setPayee({ ...payee, name: e.target.value })}
+              placeholder="Account Name"
+              value={account.name}
+              onChange={(e) => setAccount({ ...account, name: e.target.value })}
             />
-            <Button onClick={(e) => addPayee(e)}>Add Payee</Button>
+            <Button onClick={(e) => addAccount(e)}>Add Account</Button>
           </Stack>
         </FormControl>
       </Container>
@@ -50,4 +51,4 @@ const AddPayee = () => {
   );
 };
 
-export default AddPayee;
+export default AddAccount;
