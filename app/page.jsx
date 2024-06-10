@@ -1,7 +1,7 @@
 "use client";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
-import Hero from "@/app/components/hero";
-import Nav from "./components/nav";
+import Hero from "@/app/components/Hero";
+import Nav from "./components/Nav";
 import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 
 export default function Home() {
