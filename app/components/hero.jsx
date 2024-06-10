@@ -7,7 +7,8 @@ const Hero = () => {
             <div className="container mx-auto text-center">
                 <h1 className="text-royalblue-100 text-4xl font-bold mb-4">Money Tracker App</h1>
                 <p className="text-royalblue-300 text-lg mb-8">Track your expenses and manage your finances with ease.</p>
-                <Button color={"royalblue"} onClick={()=> router.push("/sign-up")}>Get Started</Button>
+                <Button color={"royalblue"} mr={3} onClick={()=> router.push("/sign-up")}>Get Started</Button>
+                <Button color={"royalblue"} onClick={()=> router.push("/sign-in")}>Sign In</Button>
             </div>
         </div>
     );

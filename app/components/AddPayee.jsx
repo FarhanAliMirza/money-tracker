@@ -4,13 +4,18 @@ import useShowToast from "@/hooks/useShowToast";
 import { db } from "@/app/firebase/config";
 import { addDoc, updateDoc, collection } from "firebase/firestore";
 import { Button, Container, FormControl, Input, Stack } from "@chakra-ui/react";
+import { useAuth } from "@clerk/nextjs";
 
 const AddPayee = () => {
-  const [payee, setPayee] = useState({ id: "", name: "", createdBy: ""});
+  const { userId, isLoaded } = useAuth();
+  const [payee, setPayee] = useState({ id: "", name: "", createdBy: userId});
   const showToast = useShowToast();
   const addPayee = async (e) => {
     e.preventDefault();
     try {
+      if (!isLoaded || !userId){
+        throw new Error("User not authenticated");
+      }
       const docRef = await addDoc(collection(db, "payees"), payee);
       await updateDoc(docRef, { id: docRef.id });
       console.log(payee);

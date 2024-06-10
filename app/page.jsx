@@ -1,10 +1,7 @@
 "use client";
-import {
-  SignedIn,
-  SignedOut,
-} from '@clerk/nextjs';
-import Hero from '@/components/Hero';
-import Nav from '../components/Nav';
+import { SignedIn, SignedOut } from "@clerk/nextjs";
+import Hero from "@/app/components/hero";
+import Nav from "./components/nav";
 import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 
 export default function Home() {
@@ -27,14 +24,16 @@ export default function Home() {
     },
   });
 
-  return (<main className="bg-darkbg min-h-screen h-full">
-    <ChakraProvider theme={newtheme}>
+  return (
+    <main className="bg-darkbg min-h-screen h-full">
+      <ChakraProvider theme={newtheme}>
         <SignedIn>
           <Nav />
         </SignedIn>
         <SignedOut>
-        <Hero />
+          <Hero />
         </SignedOut>
-    </ChakraProvider>
-  </main>);
+      </ChakraProvider>
+    </main>
+  );
 }
