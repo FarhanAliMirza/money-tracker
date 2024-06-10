@@ -60,7 +60,10 @@ const AddTransaction = () => {
   }, [userId]);
 
   useEffect(() => {
-    const q = query(collection(db, "accounts"),where("createdBy", "==", userId));
+    const q = query(
+      collection(db, "accounts"),
+      where("createdBy", "==", userId)
+    );
     const unsubscibe = onSnapshot(q, (querySnapshot) => {
       let accountsArray = [];
       querySnapshot.forEach((doc) => {
@@ -73,11 +76,18 @@ const AddTransaction = () => {
 
   const addTransaction = async (e) => {
     e.preventDefault();
-    if (newTransaction.payee === "" || newTransaction.amount === "" || newTransaction.acc === "") {
+    if (
+      newTransaction.payee === "" ||
+      newTransaction.amount === "" ||
+      newTransaction.acc === ""
+    ) {
       showToast("Error", "Please fill all the fields", "error");
     } else {
       const transactionToAdd = { ...newTransaction, type: type.toString() };
-      const postDocRef = await addDoc(collection(db, "transactions"), transactionToAdd);
+      const postDocRef = await addDoc(
+        collection(db, "transactions"),
+        transactionToAdd
+      );
       await updateDoc(postDocRef, { id: postDocRef.id });
       showToast("Success", "Transaction added successfully", "success");
       resetForm();
@@ -102,52 +112,53 @@ const AddTransaction = () => {
   };
 
   return (
-    <>
-      <Container
-        minW={"xs"}
-        maxW={"lg"}
-        mt={"24px"}
-        p={"3"}
-        borderRadius={"lg"}
-        bg={"royalblue.950"}
-      >
-        <Center>
-          <FormControl color={"royalblue.300"} gap={"8px"}>
-            <FormLabel>New Transaction</FormLabel>
-            <Stack spacing={2}>
-              <Stack direction={"row"}>
-                <Input
-                  variant={"flushed"}
-                  type="date"
-                  defaultValue={newTransaction.date}
-                  onChange={(e) => {
-                    setNewTransaction({
-                      ...newTransaction,
-                      date: e.target.value,
-                    });
-                  }}
-                />
-                <Select
-                  variant={"flushed"}
-                  defaultValue={newTransaction.acc}
-                  onChange={(e) => {
-                    setNewTransaction({
-                      ...newTransaction,
-                      acc: e.target.value,
-                    });
-                  }}
-                >
-                  {accounts.map((account) => (
-                    <option value={account.name}>{account.name}</option>
-                  ))}
-                </Select>
+    <Container
+      minW={"xs"}
+      maxW={"lg"}
+      mt={"24px"}
+      p={"3"}
+      borderRadius={"lg"}
+      bg={"royalblue.950"}
+    >
+      <Center>
+        <FormControl color={"royalblue.300"} gap={"8px"}>
+          <FormLabel>New Transaction</FormLabel>
+          <Stack spacing={2}>
+            <Stack direction={"row"}>
+              <Input
+                variant={"flushed"}
+                type="date"
+                defaultValue={newTransaction.date}
+                onChange={(e) => {
+                  setNewTransaction({
+                    ...newTransaction,
+                    date: e.target.value,
+                  });
+                }}
+              />
+              <Select
+                variant={"flushed"}
+                defaultValue={newTransaction.acc}
+                onChange={(e) => {
+                  setNewTransaction({
+                    ...newTransaction,
+                    acc: e.target.value,
+                  });
+                }}
+              >
+                {accounts.map((account) => (
+                  <option value={account.name}>{account.name}</option>
+                ))}
+              </Select>
             </Stack>
             <Input
               variant={"flushed"}
               placeholder="Item/Payee"
               list="payees"
               value={newTransaction.payee}
-              onChange={(e) => setNewTransaction({ ...newTransaction, payee: e.target.value })}
+              onChange={(e) =>
+                setNewTransaction({ ...newTransaction, payee: e.target.value })
+              }
             />
             <datalist id="payees">
               {payees.map((payee) => (
@@ -167,10 +178,12 @@ const AddTransaction = () => {
                 </Radio>
                 <Checkbox
                   isChecked={newTransaction.loan.isLoan}
-                  onChange={(e) => setNewTransaction({
-                    ...newTransaction,
-                    loan: { isLoan: e.target.checked, paid: false },
-                  })}
+                  onChange={(e) =>
+                    setNewTransaction({
+                      ...newTransaction,
+                      loan: { isLoan: e.target.checked, paid: false },
+                    })
+                  }
                 >
                   Is loan
                 </Checkbox>
@@ -183,14 +196,21 @@ const AddTransaction = () => {
                 placeholder="Amount"
                 type="tel"
                 value={newTransaction.amount}
-                onChange={(e) => setNewTransaction({ ...newTransaction, amount: e.target.value })}
+                onChange={(e) =>
+                  setNewTransaction({
+                    ...newTransaction,
+                    amount: e.target.value,
+                  })
+                }
               />
             </InputGroup>
             <Input
               variant={"flushed"}
               placeholder="Note"
               value={newTransaction.note}
-              onChange={(e) => setNewTransaction({ ...newTransaction, note: e.target.value })}
+              onChange={(e) =>
+                setNewTransaction({ ...newTransaction, note: e.target.value })
+              }
             />
           </Stack>
         </FormControl>
