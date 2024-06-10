@@ -32,10 +32,11 @@ const AddTransaction = () => {
   const [payees, setPayees] = useState([]);
   const showToast = useShowToast();
   const { userId, isLoaded } = useAuth();
+  const [accounts, setAccounts] = useState([]);
   const [newTransaction, setNewTransaction] = useState({
     id: "",
     date: new Date().toISOString().split("T")[0],
-    acc: "Cash",
+    acc: accounts[0]?.name || "",
     payee: "",
     type: type.toString(),
     amount: "",
@@ -57,9 +58,21 @@ const AddTransaction = () => {
     });
   }, []);
 
+  useEffect(() => {
+    const q = query(collection(db, "accounts"),where("createdBy", "==", userId));
+    const unsubscibe = onSnapshot(q, (querySnapshot) => {
+      let accountsArray = [];
+      querySnapshot.forEach((doc) => {
+        accountsArray.push({ ...doc.data(), id: doc.id });
+      });
+      setAccounts(accountsArray);
+      return () => unsubscibe();
+    });
+  }, []);
+
   const addTransaction = async (e) => {
     e.preventDefault();
-    if (newTransaction.payee === "" || newTransaction.amount === "") {
+    if (newTransaction.payee === "" || newTransaction.amount === "" || newTransaction.acc === "") {
       showToast("Error", "Please fill all the fields", "error");
     } else {
       newTransaction.type = type.toString();
@@ -73,7 +86,7 @@ const AddTransaction = () => {
       setNewTransaction({
         id: "",
         date: new Date().toISOString().split("T")[0],
-        acc: "Cash",
+        acc: accounts[0]?.name || "",
         payee: "",
         type: type.toString(),
         amount: "",
@@ -121,10 +134,9 @@ const AddTransaction = () => {
                     });
                   }}
                 >
-                  <option value="Cash">Cash</option>
-                  <option value="Online SBI">Online SBI</option>
-                  <option value="APL">APL</option>
-                  <option value="Online HDFC">Online HDFC</option>
+                  {accounts.map((account) => (
+                    <option value={account.name}>{account.name}</option>
+                  ))}
                 </Select>
               </Stack>
               <Input
