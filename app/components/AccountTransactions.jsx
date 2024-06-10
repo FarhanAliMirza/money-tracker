@@ -55,7 +55,7 @@ const AccountTransactions = () => {
 
   const filterTransactions = (account, month, loans) => {
     const filteredAccount = transactions.filter(
-      (transaction) => transaction.account === account
+      (transaction) => transaction.acc === account
     );
     if (month === "12") {
       setFilteredTransactions(filteredAccount);
