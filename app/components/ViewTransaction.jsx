@@ -37,11 +37,25 @@ const ViewTransaction = (props) => {
   const date = `${fullDate.getDate()}, ${month[fullDate.getMonth()]}`;
 
   const handleUpdateLoan = async (id) => {
-    setLoan({ ...loan, paid: !loan.paid });
     try {
+      const updatedLoan = !loan.paid;
+      if (updatedLoan) {
+        await updateDoc(doc(db, "transactions", id), {
+          type: "transfer",
+        });
+      } else {
+        await updateDoc(doc(db, "transactions", id), {
+          type: "expense",
+        });
+      }
       await updateDoc(doc(db, "transactions", id), {
-        loan: { ...loan, paid: !loan.paid, paidDate: new Date().toISOString()},
+        loan: {
+          ...loan,
+          paid: updatedLoan,
+          paidDate: new Date().toISOString(),
+        },
       });
+      setLoan({ ...loan, paid: updatedLoan });
       showToast("Success", "Loan updated successfully", "success");
     } catch (error) {
       showToast("Error", error.message, "error");
@@ -72,14 +86,14 @@ const ViewTransaction = (props) => {
         onClick={onOpen}
         className="flex bg-royalblue-900 p-3 m-1  justify-between rounded-md cursor-pointer hover:bg-royalblue-800"
       >
-          <div className="flex w-24 line-clamp-1">
-            {props.transaction.payee}
-            {props.transaction.loan.isLoan
-              ? (props.transaction.loan.paid && " ✅") || " ❗"
-              : ""}
-          </div>
-          <div>{date}</div>
-          <div className={`w-16 flex justify-end ${color}`}>{amount}</div>
+        <div className="flex w-24 line-clamp-1">
+          {props.transaction.payee}
+          {props.transaction.loan.isLoan
+            ? (props.transaction.loan.paid && " ✅") || " ❗"
+            : ""}
+        </div>
+        <div>{date}</div>
+        <div className={`w-16 flex justify-end ${color}`}>{amount}</div>
       </a>
 
       <Modal colorScheme={"royalblue"} isOpen={isOpen} onClose={onClose}>
@@ -96,7 +110,11 @@ const ViewTransaction = (props) => {
               {props.transaction.loan.isLoan && (
                 <div>
                   Loan:{" "}
-                  {(props.transaction.loan.paid && `Paid ✅  on: ${props.transaction.loan.paidDate.split("T")[0]}`) || "Pending ❗"}
+                  {(props.transaction.loan.paid &&
+                    `Paid ✅  on: ${
+                      props.transaction.loan.paidDate.split("T")[0]
+                    }`) ||
+                    "Pending ❗"}
                 </div>
               )}
               <div>Date: {props.transaction.date}</div>
