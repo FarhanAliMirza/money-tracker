@@ -26,7 +26,7 @@ export default function Home() {
   });
 
   return (
-    <main className="bg-darkbg min-h-screen h-full">
+    <main className="bg-black min-h-screen h-full">
       <ChakraProvider theme={newtheme}>
         <SignedIn>
           <Nav />
