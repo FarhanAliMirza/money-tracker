@@ -14,7 +14,7 @@ Money Tracker is a simple and intuitive application that helps you keep track of
 
 ## Usage 📌 
 
-You can access the deployed version of Money Tracker at [https://money-tracker-fam.vercel.app](https://money-tracker-fam.vercel.app).
+You can access the deployed version of Money Tracker at [https://moneytracker.farhanalimirza.xyz](https://moneytracker.farhanalimirza.xyz/).
 
 1. Sign up or log in to your Money Tracker account.
 2. Add your accounts in the account section.
