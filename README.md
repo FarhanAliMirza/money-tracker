@@ -37,9 +37,7 @@ Contributions are welcome! If you have any ideas, suggestions, or bug reports, p
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
 
-## Contact 📧
 
-If you have any questions or need assistance, feel free to reach out to our support team at support@moneytracker.com.
 
 Happy tracking! 📈💸
 
